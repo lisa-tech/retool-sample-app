@@ -8,7 +8,7 @@ export default class ContactList extends React.Component<any> {
         if (this.props.rows){
             rows = this.props.rows.map(row => <ContactListRow key={row.Id} row={row} page={this.props.page}/>);
         }
-        return (<table>
+        return (<table {...this.props.retool}>
             <thead>
                 <tr>
                     <th>Action</th>
