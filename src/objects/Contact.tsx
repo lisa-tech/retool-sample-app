@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Controller } from '@retool/app'
 import { Heading, Form, Input, Text, Button, Spacer, ContactList } from '../controls'
-import { If, ElseIf, Else, ForEach, OnClick, SetField, CallAction, Validator, CloseDialog } from "@retool/app"
+import { If, ElseIf, Else, ForEach, OnClick, SetField, CallAction, Validator, CloseDialog, SetHandler, OpenDialog, On } from "@retool/app"
 import { ContactApi } from "../api/MockApi"
 
 
@@ -28,19 +28,31 @@ export class ListController extends Controller {
     }
 
     static DefaultLayout = {
-        template:"ListPage",
+        template: "ListPage",
         Header: <Heading text="Contacts" textSize="medium" />,
-        Body: <ContactList rows="{contacts}" />
+        Body: <>
+            <ContactList rows="{contacts}">
+                <On event="Edit">
+                    <OpenDialog object="contact" pageType="edit" id="{event.row.Id}" />
+                </On>
+            </ContactList>
+        </>
     }
 
     static variables = {
         contacts: {}
+    }
+
+    static actions = {
+        createNew: {}
     }
 }
 
 
 export class EditController extends Controller {
     contact = null;
+
+    fullName = () => this.contact.FirstName + this.contact.LastName;
 
     init(params) {
         return ContactApi.get(params.id).then(contact => this.contact = contact);
@@ -53,6 +65,15 @@ export class EditController extends Controller {
 
     static actions = {
         save: { label: "Save" }
+    }
+
+    static params = {
+        id: { label: "Record Id" },
+        showDetail: { label: "Show Detail", type: "checkbox" }
+    }
+
+    static variables = {
+        fullName: {}
     }
 
     static DefaultLayout = {

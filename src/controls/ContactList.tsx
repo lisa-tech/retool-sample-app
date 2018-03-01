@@ -5,8 +5,8 @@ import {control} from '@retool/app';
 export default class ContactList extends React.Component<any> {
     render(){
         var rows;
-        if (this.props.rows){
-            rows = this.props.rows.map(row => <ContactListRow key={row.Id} row={row} page={this.props.page}/>);
+        if (Array.isArray(this.props.rows)){
+            rows = this.props.rows.map(row => <ContactListRow key={row.Id} row={row} page={this.props.page} onEdit={this.props.onEdit}/>);
         }
         return (<table {...this.props.retool}>
             <thead>
@@ -25,10 +25,10 @@ export default class ContactList extends React.Component<any> {
     }
 }
 
-class ContactListRow extends React.Component<{row:any,page:any}> {
+class ContactListRow extends React.Component<{row:any,page:any,onEdit:(e,evt)=> void}> {
     handleClick = (e) => {
         e.preventDefault();
-        this.props.page.openDialog({object:"Contact",pageType:"edit",params:{id:this.props.row.Id}});
+        this.props.onEdit(e,{row:this.props.row});
     }
 
     render(){
@@ -46,7 +46,8 @@ class ContactListRow extends React.Component<{row:any,page:any}> {
 control(ContactList,{
     label:"Contact List",
     props: {
-        rows:{label:"Rows"}
+        rows:{label:"Rows",type:"any"},
+        onEdit:{type:'handler'}
     }
 })
 
