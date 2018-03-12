@@ -1,8 +1,10 @@
 import * as React from 'react'
-import { Controller } from '@retool/app'
-import { Heading, Form, Input, Text, Button, Spacer, ContactList } from '../controls'
-import { If, ElseIf, Else, ForEach, OnClick, SetField, CallAction, Validator, CloseDialog, SetHandler, OpenDialog, On } from "@retool/app"
+import { Controller,Validator } from '@retool/app'
+import { Heading, Form, Input, Text, Button, Spacer, ContactList, Menu, MenuItem } from '../controls'
+import {OnClick,On,OpenDialog,SetField,CallAction,CloseDialog} from "../statements"
 import { ContactApi } from "../api/MockApi"
+
+
 
 
 export default class Contact {
@@ -20,31 +22,29 @@ export default class Contact {
     }
 }
 
+
 export class ListController extends Controller {
     contacts = null;
-
+    title = "Contacts";
     init(params) {
         return ContactApi.list().then(contacts => this.contacts = contacts);
     }
 
     static DefaultLayout = {
         template: "ListPage",
-        Header: <Heading text="Contacts" textSize="medium" />,
+        Header: <Heading text="{title}" textSize="medium" />,
         Body: <>
             <ContactList rows="{contacts}">
                 <On event="Edit">
-                    <OpenDialog object="contact" pageType="edit" id="{event.row.Id}" />
+                    <OpenDialog resource="contact" controller="edit" id="{event.row.Id}" />
                 </On>
             </ContactList>
         </>
     }
 
     static variables = {
-        contacts: {}
-    }
-
-    static actions = {
-        createNew: {}
+        contacts: {},
+        title: {}
     }
 }
 
@@ -61,6 +61,7 @@ export class EditController extends Controller {
     save() {
         var validator = new Validator(this.contact);
         validator.validate();
+        this.canvas.app.notify({type:"success",message:"Record Saved"});
     }
 
     static actions = {
@@ -68,8 +69,7 @@ export class EditController extends Controller {
     }
 
     static params = {
-        id: { label: "Record Id" },
-        showDetail: { label: "Show Detail", type: "checkbox" }
+        id: { label: "Record Id" }
     }
 
     static variables = {
@@ -89,7 +89,7 @@ export class EditController extends Controller {
             </Form>
         </>,
         Footer: <>
-            <Button label="Save" variant="brand">
+            <Button label="Save" variant="brand" default>
                 <OnClick>
                     <CallAction action="save" />
                     <CloseDialog />

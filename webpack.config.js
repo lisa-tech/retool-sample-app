@@ -8,7 +8,10 @@ module.exports = {
   devServer:{
       contentBase:"./public",
       historyApiFallback: true,
-      watchContentBase:true
+      watchContentBase:true,
+      headers: {
+        "X-Retool-Layouts":"localhost:9090"
+      }
   },
   output: {
     filename: 'bundle.js',

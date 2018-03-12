@@ -11,6 +11,8 @@ export {
     Heading,
     Input,
     Link,
+    Menu,
+    MenuItem,
     Paragraph,
     Spacer,
     StaticField,

@@ -8,12 +8,14 @@ export class ContactApi {
     static get(id) {
         var data = ContactApi.data;
         return new Promise((resolve, reject) => {
-            for (var i = 0; i < ContactApi.data.length; i++) {
-                if (data[i].Id == id) {
-                    return resolve(data[i]);
+            setTimeout(()=> {
+                for (var i = 0; i < ContactApi.data.length; i++) {
+                    if (data[i].Id == id) {
+                        return resolve(data[i]);
+                    }
                 }
-            }
-            reject("Could not find contact: " + id);
+                reject("Could not find contact: " + id);
+            },1000);
         })
     }
 

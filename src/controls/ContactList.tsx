@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {control} from '@retool/app';
+import * as Retool  from '@retool/app';
 
 
 export default class ContactList extends React.Component<any> {
     render(){
         var rows;
         if (Array.isArray(this.props.rows)){
-            rows = this.props.rows.map(row => <ContactListRow key={row.Id} row={row} page={this.props.page} onEdit={this.props.onEdit}/>);
+            rows = this.props.rows.map(row => <ContactListRow key={row.Id} row={row} canvas={this.props.canvas} onEdit={this.props.onEdit}/>);
         }
         return (<table {...this.props.retool}>
             <thead>
@@ -25,7 +25,7 @@ export default class ContactList extends React.Component<any> {
     }
 }
 
-class ContactListRow extends React.Component<{row:any,page:any,onEdit:(e,evt)=> void}> {
+class ContactListRow extends React.Component<{row:any,canvas:Retool.ICanvas,onEdit:(e,evt)=> void}> {
     handleClick = (e) => {
         e.preventDefault();
         this.props.onEdit(e,{row:this.props.row});
@@ -43,7 +43,7 @@ class ContactListRow extends React.Component<{row:any,page:any,onEdit:(e,evt)=> 
     }
 }
 
-control(ContactList,{
+Retool.control(ContactList,{
     label:"Contact List",
     props: {
         rows:{label:"Rows",type:"any"},
